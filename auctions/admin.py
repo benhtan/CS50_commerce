@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Listing, Watchlist
+from .models import User, Listing, Watchlist, Bid
 from django import forms
 
 from django.db import models
@@ -20,6 +20,10 @@ class WatchlistAdmin(admin.ModelAdmin):
 class UserAdmin(admin.ModelAdmin):
     list_display = ('id', 'username')
 
+class BidAdmin(admin.ModelAdmin):
+    list_display = ('id', 'listing', 'userBid', 'bidDateTime')
+
 admin.site.register(User, UserAdmin)
 admin.site.register(Listing, ListingAdmin)
 admin.site.register(Watchlist, WatchlistAdmin)
+admin.site.register(Bid, BidAdmin)

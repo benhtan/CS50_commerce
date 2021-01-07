@@ -6,8 +6,10 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Max
 
-from .models import User, Listing, Watchlist
+from .models import User, Listing, Watchlist, Bid
+from decimal import Decimal
 
 
 def index(request):
@@ -93,7 +95,7 @@ def create_listing(request):
             imageURL = form.cleaned_data['imageURL']
             category = form.cleaned_data['category']
             owner = request.user
-            print(owner)
+            #print(owner)
             
             # Insert into database
             l = Listing(title=title, description=description, startingBid=startingBid, imageURL=imageURL, category=category, owner=owner)
@@ -105,10 +107,15 @@ def create_listing(request):
             'form': form,
         })
     
-    form = CreateListingForm
+    create_listing_form = CreateListingForm()
+
     return render(request, 'auctions/create_listing.html', {
-        "form": form,
+        "create_listing_form": create_listing_form,
     })
+
+# Django form for user to submit new bid
+class BidForm(forms.Form):
+    newBid = forms.DecimalField(label='New Bid ($)', min_value=0.00, decimal_places=2, max_digits=99)
 
 def listing_page(request, listingID):
 
@@ -130,10 +137,11 @@ def listing_page(request, listingID):
             watchlistButtonText = 'Add to Watchlist'
         except:
             pass
-
+    bid_form = BidForm()
     return render(request, 'auctions/listing_page.html', {
         'listing': listing,
         'watchlistButtonText': watchlistButtonText,
+        'bid_form' : bid_form,
     })
 
 @login_required(login_url='login')
@@ -158,3 +166,33 @@ def watchlist(request):
         return HttpResponseRedirect(reverse("listing_page", args=(listing.id,)))
 
     return HttpResponseRedirect(reverse("index"))
+
+
+
+@login_required(login_url='login')
+def bid(request, listingID):
+    if request.method == 'POST':
+        form = BidForm(request.POST)
+
+        if form.is_valid():
+            # Get user submitted new bid price
+            new_bid = form.cleaned_data['newBid']
+
+            # Get the listing that is being bid
+            listing = Listing.objects.get(pk=listingID)
+
+            # Find highest bid if any
+            # Query the maximum of this listing. Returns None is nothing matches filter (no bid yet)
+            # .aggregate(Max) return a dictionary. To get value, need to access dictionary with []
+            highestBid = Bid.objects.filter(listing=listing).all().aggregate(Max('userBid'))['userBid__max']
+            if highestBid == None:
+                highestBid = listing.startingBid
+
+            #print(f'{new_bid}   {highestBid}')
+            if new_bid > highestBid:
+                bid = Bid(user=request.user,listing=listing,userBid=new_bid)
+                bid.save()
+                listing.maxBid = bid
+                listing.save()
+
+    return HttpResponseRedirect(reverse("listing_page", args=(listingID,)))

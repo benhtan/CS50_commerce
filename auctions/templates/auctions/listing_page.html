@@ -7,17 +7,31 @@
     <form action="{% url 'watchlist' %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="listingID" value="{{ listing.id }}">
-        <input type="submit" value="{{ watchlistButtonText }}" class="btn btn-warning">
+        <input type="submit" value="{{ watchlistButtonText }}" class="btn btn-warning btn-sm">
     </form>
     {% endif %}
     
 
     <div>
-        <img src="{{ listing.imageURL }}" class="img-thumbnail" width="20%">
+        <img src="{{ listing.imageURL }}" class="img-thumbnail" width="20%">        
         <table>
             <tr>
-                <td>Price:</td>
-                <th>${{ listing.startingBid }}</th>
+                <td>Start Bid:</td>
+                <td><strong>${{ listing.startingBid }}</strong></td>
+                {% if listing.maxBid %}
+                    <td>Max Bid:</td>
+                    <td><strong>${{ listing.maxBid.userBid }} ({{ listing.maxBid.user.username }})</strong></td>
+                {% endif %}
+                <td>{{ bid_form.newBid.label }}</td>
+                <td>
+                {% if user.is_authenticated %}
+                        <form action="{% url 'bid' listing.id %}" method="post">
+                        {% csrf_token %}
+                        {{ bid_form.newBid }}
+                        <input type="submit" value="Bid" class="btn btn-danger btn-sm">
+                        </form>
+                {% endif %}
+                </td>
             </tr>            
             <tr>
                 <td>Description:</td>

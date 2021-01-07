@@ -5,13 +5,13 @@
 
     {% for listing in listings %}
     <div style="padding-bottom: 50px;">
-        <img src="{{ listing.imageURL }}" class="img-thumbnail" width="20%">
+        <a href="{% url 'listing_page' listing.id %}"><img src="{{ listing.imageURL }}" class="img-thumbnail" width="20%"></a>
         <table>
             <thead>
                 <th><a href="{% url 'listing_page' listing.id %}">{{ listing.title }}</a></th>
             </thead>            
             <tr>
-                <td>Price: ${{ listing.startingBid }}</td>
+                <td>Price: <strong>${{ listing.startingBid }}</strong></td>
             </tr>
             <tr>
                 <td>{{ listing.description }}</td>
