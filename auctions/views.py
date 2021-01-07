@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Max
+from django.contrib import messages
 
 from .models import User, Listing, Watchlist, Bid
 from decimal import Decimal
@@ -126,6 +127,7 @@ def listing_page(request, listingID):
         return HttpResponseRedirect(reverse('index'))
 
     # Deciding wether the button says Add or Remove from Watchlist
+    watchlistButtonText = None
     if request.user.is_authenticated:
         try:
             # Listing is in the watchlist
@@ -137,6 +139,7 @@ def listing_page(request, listingID):
             watchlistButtonText = 'Add to Watchlist'
         except:
             pass
+
     bid_form = BidForm()
     return render(request, 'auctions/listing_page.html', {
         'listing': listing,
@@ -194,5 +197,9 @@ def bid(request, listingID):
                 bid.save()
                 listing.maxBid = bid
                 listing.save()
+                m = 'Bid sucessful!'
+            else:
+                m = 'Please place a higher bid!'
 
+    messages.add_message(request, messages.INFO, m)
     return HttpResponseRedirect(reverse("listing_page", args=(listingID,)))

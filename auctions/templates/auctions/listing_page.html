@@ -1,6 +1,14 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-primary" role="alert" style="text-align: center;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
     <h2>{{ listing.title }}</h2>
 
     {% if user.is_authenticated %}
@@ -16,41 +24,45 @@
         <img src="{{ listing.imageURL }}" class="img-thumbnail" width="20%">        
         <table>
             <tr>
-                <td>Start Bid:</td>
+                <td>Starting Bid:</td>
                 <td><strong>${{ listing.startingBid }}</strong></td>
+
                 {% if listing.maxBid %}
                     <td>Max Bid:</td>
                     <td><strong>${{ listing.maxBid.userBid }} ({{ listing.maxBid.user.username }})</strong></td>
                 {% endif %}
+
+                {% if user.is_authenticated %}
                 <td>{{ bid_form.newBid.label }}</td>
                 <td>
-                {% if user.is_authenticated %}
+                
                         <form action="{% url 'bid' listing.id %}" method="post">
                         {% csrf_token %}
                         {{ bid_form.newBid }}
                         <input type="submit" value="Bid" class="btn btn-danger btn-sm">
                         </form>
-                {% endif %}
                 </td>
-            </tr>            
+                {% endif %}                
+            </tr> 
+
             <tr>
                 <td>Description:</td>
                 <td>{{ listing.description }}</td>
             </tr>
+
             <tr>
                 <td>Category:</td>
                 <td>{{ listing.category }}</td>
             </tr>
+
             <tr>
                 <td>Owner:</td>
                 <td>{{ listing.owner.username }}</td>
             </tr>
+
             <tr>
                 <td>Listing Date:</td>
                 <td>{{ listing.creationDate }}</td>
-            </tr>
-            <tr>
-
             </tr>
         </table>
         
