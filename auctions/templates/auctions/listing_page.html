@@ -1,0 +1,46 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>{{ listing.title }}</h2>
+
+    {% if user.is_authenticated %}
+    <form action="{% url 'watchlist' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="listingID" value="{{ listing.id }}">
+        <input type="submit" value="{{ watchlistButtonText }}" class="btn btn-warning">
+    </form>
+    {% endif %}
+    
+
+    <div>
+        <img src="{{ listing.imageURL }}" class="img-thumbnail" width="20%">
+        <table>
+            <tr>
+                <td>Price:</td>
+                <th>${{ listing.startingBid }}</th>
+            </tr>            
+            <tr>
+                <td>Description:</td>
+                <td>{{ listing.description }}</td>
+            </tr>
+            <tr>
+                <td>Category:</td>
+                <td>{{ listing.category }}</td>
+            </tr>
+            <tr>
+                <td>Owner:</td>
+                <td>{{ listing.owner.username }}</td>
+            </tr>
+            <tr>
+                <td>Listing Date:</td>
+                <td>{{ listing.creationDate }}</td>
+            </tr>
+            <tr>
+
+            </tr>
+        </table>
+        
+        
+    </div>
+
+{% endblock %}

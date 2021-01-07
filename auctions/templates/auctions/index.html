@@ -4,8 +4,19 @@
     <h2>Active Listings</h2>
 
     {% for listing in listings %}
-    <div>
-        {{ listing.description }}
+    <div style="padding-bottom: 50px;">
+        <img src="{{ listing.imageURL }}" class="img-thumbnail" width="20%">
+        <table>
+            <thead>
+                <th><a href="{% url 'listing_page' listing.id %}">{{ listing.title }}</a></th>
+            </thead>            
+            <tr>
+                <td>Price: ${{ listing.startingBid }}</td>
+            </tr>
+            <tr>
+                <td>{{ listing.description }}</td>
+            </tr>
+        </table>      
     </div>
         
     {% endfor %}
