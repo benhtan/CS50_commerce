@@ -1,38 +1,53 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-primary" role="alert" style="text-align: center;">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-
     <h2>{{ listing.title }}</h2>
 
     {% if user.is_authenticated %}
-    <form action="{% url 'watchlist' %}" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="listingID" value="{{ listing.id }}">
-        <input type="submit" value="{{ watchlistButtonText }}" class="btn btn-warning btn-sm">
-    </form>
+        <table>
+            <tr>
+                <!-- Watchlist Button -->
+                <td>
+                    <form action="{% url 'watchlist' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="listingID" value="{{ listing.id }}">
+                        <input type="submit" value="{{ watchlistButtonText }}" class="btn btn-warning btn-sm">
+                    </form>
+                </td>
+
+                <!-- Close Listing Button -->
+                <td>
+                    {% if user == listing.owner and listing.openListing %}
+                    <form action="{% url 'close_listing' listing.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="submit" value="Close Listing" class="btn btn-primary btn-sm">
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
     {% endif %}
     
 
+    <!-- Product Info Starts Here -->
     <div>
-        <img src="{{ listing.imageURL }}" class="img-thumbnail" width="20%">        
+        <img src="{{ listing.imageURL }}" class="img-thumbnail" width="20%"> 
+               
+        
+
         <table>
             <tr>
                 <td>Starting Bid:</td>
                 <td><strong>${{ listing.startingBid }}</strong></td>
 
+                <!-- Showing maxBid if any -->
                 {% if listing.maxBid %}
                     <td>Max Bid:</td>
                     <td><strong>${{ listing.maxBid.userBid }} ({{ listing.maxBid.user.username }})</strong></td>
                 {% endif %}
 
-                {% if user.is_authenticated %}
+                <!-- Bidding feature -->
+                {% if user.is_authenticated and listing.openListing and user != listing.owner %}
                 <td>{{ bid_form.newBid.label }}</td>
                 <td>
                 
@@ -42,7 +57,18 @@
                         <input type="submit" value="Bid" class="btn btn-danger btn-sm">
                         </form>
                 </td>
-                {% endif %}                
+                {% endif %}
+                
+                <!-- Bidding alerts -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <td><div role="alert" style="text-align: center;"
+                            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %} class="alert alert-success" {% endif %}
+                            {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %} class="alert alert-warning" {% endif %}>
+                            {{ message }}
+                        </div></td>
+                    {% endfor %}
+                {% endif %}
             </tr> 
 
             <tr>

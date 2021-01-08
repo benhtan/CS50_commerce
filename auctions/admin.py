@@ -11,7 +11,7 @@ class ListingModelForm(forms.ModelForm):
     description = forms.CharField(widget=forms.Textarea)
 
 class ListingAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', "description", 'startingBid', 'category', 'owner', 'imageURL')
+    list_display = ('id', 'title', "description", 'startingBid', 'category', 'owner', 'openListing', 'imageURL')
     form = ListingModelForm
 
 class WatchlistAdmin(admin.ModelAdmin):

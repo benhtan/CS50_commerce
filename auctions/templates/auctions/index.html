@@ -11,7 +11,12 @@
                 <th><a href="{% url 'listing_page' listing.id %}">{{ listing.title }}</a></th>
             </thead>            
             <tr>
-                <td>Price: <strong>${{ listing.startingBid }}</strong></td>
+                <td>Starting Bid: <strong>${{ listing.startingBid }}</strong></td>
+
+                {% if listing.maxBid %}
+                    <td>Max Bid:</td>
+                    <td><strong>${{ listing.maxBid.userBid }} ({{ listing.maxBid.user.username }})</strong></td>
+                {% endif %}
             </tr>
             <tr>
                 <td>{{ listing.description }}</td>

@@ -16,6 +16,7 @@ class Listing(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='userListings')
     creationDate = models.DateTimeField(auto_now_add=True)
     maxBid = models.ForeignKey('Bid', on_delete=models.CASCADE, blank=True, null=True, related_name='maxBid_rev')
+    openListing = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.id} {self.title}"

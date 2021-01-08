@@ -193,13 +193,27 @@ def bid(request, listingID):
 
             #print(f'{new_bid}   {highestBid}')
             if new_bid > highestBid:
+                # Create Bid object and save it
                 bid = Bid(user=request.user,listing=listing,userBid=new_bid)
                 bid.save()
+
+                # Update the maxBid field of the listing
                 listing.maxBid = bid
                 listing.save()
-                m = 'Bid sucessful!'
-            else:
-                m = 'Please place a higher bid!'
 
-    messages.add_message(request, messages.INFO, m)
+                # Sent message with the request
+                messages.add_message(request, messages.SUCCESS, 'Bid sucessful!')
+            else:
+                messages.add_message(request, messages.WARNING, 'Please place a higher bid!')
+
+    
+    return HttpResponseRedirect(reverse("listing_page", args=(listingID,)))
+
+@login_required(login_url='login')
+def close_listing(request, listingID):
+    if request.method == 'POST':
+        listing = Listing.objects.get(pk=listingID)
+        listing.openListing = False
+        listing.save()
+
     return HttpResponseRedirect(reverse("listing_page", args=(listingID,)))
