@@ -1,23 +1,30 @@
-(DONE) Owner cannot bid 
-
 The looks of website
 
-(DONE) Start bid & highest bid in index 
-
-Listing date and comment posting date: how long ago?
-
-Display date and time for the location of user
-
-(DONE) Default image url or if image does not show 
+Display date and time for the location of user. How to get user location? Can also query user for timezone.
+Workaround for now just display date like amazon and other website.
 
 Drop down list category with search
 
 Sort product list by
 
-If user access a certain url that requires login but is not login, user should login and then 
+Sort comment
+
+User profile page
+
+(DONE) Owner cannot bid 
+
+(DONE) Start bid & highest bid in index 
+
+(DONE) Listing date and comment posting date: how long ago?
+
+(DONE) Default image url or if image does not show 
+
+(DONE) If user access a certain url that requires login but is not login, user should login and then 
 redirected to the original destination user wants
 
-(DONE)If user go to /categories/'category does not exist' user should be redirected to /categories with warning
-
-If user go to listing/<int:listingID>/bid while logged out, user should login and then redirected to
+(DONE) If user go to listing/<int:listingID>/bid while logged out, user should login and then redirected to
 listing page user wants to bid
+
+(DONE) If user go to /categories/'category does not exist' user should be redirected to /categories with warning
+
+

@@ -8,6 +8,8 @@ from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Max
 from django.contrib import messages
+import pytz
+from django.utils import timezone
 
 from .models import User, Listing, Watchlist, Bid, Comment
 from .helpers import duration
@@ -20,10 +22,9 @@ def index(request):
         'title': 'Active Listings'
     })
 
-
 def login_view(request):
     if request.user.is_authenticated:
-        return HttpResponseRedirect(reverse("index"))
+        return HttpResponseRedirect(reverse("index"))        
 
     if request.method == "POST":
 
@@ -35,13 +36,29 @@ def login_view(request):
         # Check if authentication successful
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect(reverse("index"))
+
+            # if there is a ?next= in the URL, nextURL will not be None.
+            nextURL = request.GET.get('next')
+            #print(nextURL)
+
+            # if nextURL is not None then go to nextURL
+            if nextURL:
+                return HttpResponseRedirect(nextURL)
+            else:
+                # if there no nextURL
+                return HttpResponseRedirect(reverse("index"))
         else:
             return render(request, "auctions/login.html", {
                 "message": "Invalid username and/or password."
             })
     else:
-        return render(request, "auctions/login.html")
+        # If user is redirected to login_view because of @login_required and the URL contains ?next=....
+        # then nextURL will not be None then pass it into the login.html (see login.html for more logic)
+        nextURL = request.GET.get('next')
+        #print(nextURL)
+        return render(request, "auctions/login.html", {
+            'nextURL': nextURL,
+        })
 
 
 def logout_view(request):
@@ -161,16 +178,20 @@ def listing_page(request, listingID):
     bid_form = BidForm()
     comment_form = CommentForm()
 
-    # Calculating time & duration
-    durationToPrint = duration(listing.creationDate)
-    print(durationToPrint)
+    # Calculating comment duration
+    comments = Comment.objects.filter(listing=listing).all()
+    for comment in comments:
+        comment.commentDuration = duration(comment.commentDateTime)
+        comment.save()
+    #print(commentDuration)
 
     return render(request, 'auctions/listing_page.html', {
         'listing': listing,
         'watchlistButtonText': watchlistButtonText,
         'bid_form' : bid_form,
         'comment_form' : comment_form,
-        'comments' : Comment.objects.filter(listing=listing).all(),
+        'comments' : comments,
+        'listingDuration': duration(listing.creationDate),
     })
 
 # Clicking add/remove watchlist

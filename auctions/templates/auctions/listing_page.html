@@ -90,7 +90,7 @@
 
             <tr>
                 <td>Listing Date:</td>
-                <td>{{ listing.creationDate }}</td>
+                <td>{{ listing.creationDate.date }} ({{ listingDuration }})</td>
             </tr>
         </table>
         
@@ -118,7 +118,7 @@
             <tr>
                 <td>{{ comment.user.username }}</td>
                 <td>: {{ comment.comment }}</td>
-                <td>{{ comment.commentDateTime }}</td>
+                <td>{{ comment.commentDateTime.date }} ({{ comment.commentDuration }})</td>
             </tr>
             {% endfor %}
         </table>
