@@ -9,13 +9,15 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Max
 from django.contrib import messages
 
-from .models import User, Listing, Watchlist, Bid
+from .models import User, Listing, Watchlist, Bid, Comment
+from .helpers import duration
 from decimal import Decimal
 
-
+# Rendering all available listing
 def index(request):
     return render(request, "auctions/index.html", {
-        'listings': Listing.objects.all(),
+        'listings': Listing.objects.filter(openListing=True).all(),
+        'title': 'Active Listings'
     })
 
 
@@ -48,6 +50,9 @@ def logout_view(request):
 
 
 def register(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("index"))
+
     if request.method == "POST":
         username = request.POST["username"]
         email = request.POST["email"]
@@ -81,6 +86,7 @@ class CreateListingForm(forms.Form):
     category = forms.CharField(label='Category', required=False, max_length=20)
     imageURL = forms.URLField(label='Image URL', required=False)
 
+# Creating a new listing form
 @login_required(login_url='login')
 def create_listing(request):
     if request.method == "POST":
@@ -99,7 +105,11 @@ def create_listing(request):
             #print(owner)
             
             # Insert into database
-            l = Listing(title=title, description=description, startingBid=startingBid, imageURL=imageURL, category=category, owner=owner)
+            # If user inserts imageURL then insert that into database, else don't insert to database.
+            if imageURL:
+                l = Listing(title=title, description=description, startingBid=startingBid, category=category, owner=owner, imageURL = imageURL)
+            else:
+                l = Listing(title=title, description=description, startingBid=startingBid, category=category, owner=owner)
             l.save()    
 
             return HttpResponseRedirect(reverse('listing_page', args=(l.id,)))
@@ -118,6 +128,11 @@ def create_listing(request):
 class BidForm(forms.Form):
     newBid = forms.DecimalField(label='New Bid ($)', min_value=0.00, decimal_places=2, max_digits=99)
 
+# Django form to submite comment
+class CommentForm(forms.Form):
+    comment = forms.CharField(label='Comment',max_length=999, widget=forms.Textarea)
+
+# Rendering the product page
 def listing_page(request, listingID):
 
     # Get the listing with matching ID. If not found then go to index.
@@ -130,8 +145,10 @@ def listing_page(request, listingID):
     watchlistButtonText = None
     if request.user.is_authenticated:
         try:
-            # Listing is in the watchlist
+            # Query database if there is a Watchlist object with matching user and listing
             watching = Watchlist.objects.get(user=request.user,listing=listing)
+
+            # Listing is in the watchlist
             watchlistButtonText = 'Remove from Watchlist'
         
         # Listing is not in watchlist
@@ -140,13 +157,23 @@ def listing_page(request, listingID):
         except:
             pass
 
+    # Initializing forms
     bid_form = BidForm()
+    comment_form = CommentForm()
+
+    # Calculating time & duration
+    durationToPrint = duration(listing.creationDate)
+    print(durationToPrint)
+
     return render(request, 'auctions/listing_page.html', {
         'listing': listing,
         'watchlistButtonText': watchlistButtonText,
         'bid_form' : bid_form,
+        'comment_form' : comment_form,
+        'comments' : Comment.objects.filter(listing=listing).all(),
     })
 
+# Clicking add/remove watchlist
 @login_required(login_url='login')
 def watchlist(request):
     if request.method == 'POST':
@@ -168,10 +195,22 @@ def watchlist(request):
         
         return HttpResponseRedirect(reverse("listing_page", args=(listing.id,)))
 
-    return HttpResponseRedirect(reverse("index"))
+    # To be improved, how can I get just listing object from Watchlist?
+    # Convert list of watchlist objects to list of listing objects only
+    w = []
+    for obj in  Watchlist.objects.filter(user=request.user).all():
+        w.append(obj.listing)
+    #print(w)
+    #print(Watchlist.objects.filter(user=request.user).get('listing'))
+
+    # If a GET request
+    return render(request, "auctions/index.html", {
+        'listings': w,
+        'title': 'Your Watchlist',
+    })
 
 
-
+# Placing a bid
 @login_required(login_url='login')
 def bid(request, listingID):
     if request.method == 'POST':
@@ -209,6 +248,7 @@ def bid(request, listingID):
     
     return HttpResponseRedirect(reverse("listing_page", args=(listingID,)))
 
+# Close listing button is pressed
 @login_required(login_url='login')
 def close_listing(request, listingID):
     if request.method == 'POST':
@@ -217,3 +257,40 @@ def close_listing(request, listingID):
         listing.save()
 
     return HttpResponseRedirect(reverse("listing_page", args=(listingID,)))
+
+# Posting comment
+@login_required(login_url='login')
+def comment(request, listingID):
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.cleaned_data['comment']
+            listing = Listing.objects.get(pk=listingID)
+            c = Comment(comment=comment, listing=listing, user=request.user)
+            c.save()
+
+    return HttpResponseRedirect(reverse("listing_page", args=(listingID,)))
+
+# Render page listing unique categories
+def categories(request):
+    c = Listing.objects.values('category').distinct()
+    #print(c)
+    return render(request, 'auctions/categories.html', {
+        'categories': c
+    })
+
+# Render a page listing items in the selected category
+def selectCategory(request, category):
+    a = Listing.objects.filter(category=category).all()
+    #print(a)
+
+    # If there is no listing with the specified category
+    # redirect to /categories with warning
+    if not a:
+        messages.add_message(request, messages.WARNING, 'Your selected category does not exist. Please select one of the categories bellow')
+        return HttpResponseRedirect(reverse('categories'))
+
+    return render(request, 'auctions/index.html', {
+        'title': category.capitalize(),
+        'listings': a,
+    })

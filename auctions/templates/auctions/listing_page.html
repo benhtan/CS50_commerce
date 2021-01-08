@@ -1,7 +1,10 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>{{ listing.title }}</h2>
+    {% if listing.maxBid.user == user and not listing.openListing %}
+        <div class="alert alert-primary" role="alert">Congratulations! You are the winner!</div>        
+    {% endif %}
+    <h2>{{ listing.title }} {% if not listing.openListing %} (Closed) {% endif %}</h2>
 
     {% if user.is_authenticated %}
         <table>
@@ -49,20 +52,19 @@
                 <!-- Bidding feature -->
                 {% if user.is_authenticated and listing.openListing and user != listing.owner %}
                 <td>{{ bid_form.newBid.label }}</td>
-                <td>
-                
-                        <form action="{% url 'bid' listing.id %}" method="post">
+                <td>                
+                    <form action="{% url 'bid' listing.id %}" method="post">
                         {% csrf_token %}
                         {{ bid_form.newBid }}
                         <input type="submit" value="Bid" class="btn btn-danger btn-sm">
-                        </form>
+                    </form>
                 </td>
                 {% endif %}
                 
                 <!-- Bidding alerts -->
                 {% if messages %}
                     {% for message in messages %}
-                        <td><div role="alert" style="text-align: center;"
+                        <td><div role="alert"
                             {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %} class="alert alert-success" {% endif %}
                             {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %} class="alert alert-warning" {% endif %}>
                             {{ message }}
@@ -94,5 +96,33 @@
         
         
     </div>
+
+    <!-- Comment Form -->
+    {% if user.is_authenticated %}    
+        <form action="{% url 'comment' listing.id %}" method="post">
+            {% csrf_token %}
+            <p style="padding-top: 20px;">Comment as {{user.username}}</p>
+            <table>
+                <tr>
+                    <td>{{ comment_form.comment }}</td>
+                    <td><input type="submit" value="Comment" class="btn btn-secondary btn-sm"></td>
+                </tr>
+            </table>     
+        </form>
+    {% endif %}
+    
+    {% if comments %}
+        <h5 style="padding-top: 15px;">Comments:</h5>
+        <table>
+            {% for comment in comments %}
+            <tr>
+                <td>{{ comment.user.username }}</td>
+                <td>: {{ comment.comment }}</td>
+                <td>{{ comment.commentDateTime }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+    
 
 {% endblock %}

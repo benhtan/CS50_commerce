@@ -1,0 +1,24 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <!-- Alert if not a valid categories is entered into url -->
+    {% if messages %}
+    {% for message in messages %}
+        <td><div role="alert" style="text-align: center;"
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %} class="alert alert-success" {% endif %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %} class="alert alert-warning" {% endif %}>
+            {{ message }}
+        </div></td>
+    {% endfor %}
+    {% endif %}
+
+    <h2>Categories</h2>
+    <ul>
+        {% for c in categories %}
+            <a href="{% url 'selectCategory' c.category %}"><li>{{ c.category }}</li></a>
+            
+        {% endfor %}
+    </ul>
+    
+
+{% endblock %}
