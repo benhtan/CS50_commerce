@@ -1,23 +1,24 @@
 body {
     padding: 10px;
-    align-content: flex-end;
+    /* background-color: antiquewhite; */
+}
 
 td {
-    padding-right: 50px;
+    padding-right: 10px;
+    font-size: 80%;
+    width: fit-content;
 }
 
-table, th, td {
+/* table, th, td {
     border: 1px solid black;
-  }
-
-.alert {
-    text-align: center;
-}
+    border-collapse: collapse;
+  } */
 
 #hello {
     font-size: 15px;
+    padding-top: 0px;
 }
 
-.hello {
-    font-size: 15px;
+#brand {
+    padding-bottom: 0px;
 }
