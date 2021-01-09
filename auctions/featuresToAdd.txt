@@ -11,6 +11,8 @@ Sort comment
 
 User profile page
 
+Edit listing
+
 (DONE) Owner cannot bid 
 
 (DONE) Start bid & highest bid in index 

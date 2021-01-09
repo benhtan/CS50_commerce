@@ -3,9 +3,21 @@ body {
     align-content: flex-end;
 
 td {
-    padding-right: 10px;
+    padding-right: 50px;
 }
 
-.alert{
+table, th, td {
+    border: 1px solid black;
+  }
+
+.alert {
     text-align: center;
+}
+
+#hello {
+    font-size: 15px;
+}
+
+.hello {
+    font-size: 15px;
 }
