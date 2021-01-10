@@ -19,7 +19,8 @@ from decimal import Decimal
 def index(request):
     return render(request, "auctions/index.html", {
         'listings': Listing.objects.filter(openListing=True).all(),
-        'title': 'Active Listings'
+        'title': 'Active Listings',
+        'activeMenu': 'index',
     })
 
 def login_view(request):
@@ -58,6 +59,7 @@ def login_view(request):
         #print(nextURL)
         return render(request, "auctions/login.html", {
             'nextURL': nextURL,
+            'activeMenu': 'login',
         })
 
 
@@ -93,7 +95,9 @@ def register(request):
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
     else:
-        return render(request, "auctions/register.html")
+        return render(request, "auctions/register.html", {
+            'activeMenu': 'register',
+        })
 
 # Django form where user can start a listing
 class CreateListingForm(forms.Form):
@@ -139,6 +143,7 @@ def create_listing(request):
 
     return render(request, 'auctions/create_listing.html', {
         "create_listing_form": create_listing_form,
+        'activeMenu': 'create_listing',
     })
 
 # Django form for user to submit new bid
@@ -228,6 +233,7 @@ def watchlist(request):
     return render(request, "auctions/index.html", {
         'listings': w,
         'title': 'Your Watchlist',
+        'activeMenu': 'watchlist',
     })
 
 
@@ -297,7 +303,8 @@ def categories(request):
     c = Listing.objects.values('category').distinct()
     #print(c)
     return render(request, 'auctions/categories.html', {
-        'categories': c
+        'categories': c,
+        'activeMenu': 'categories',
     })
 
 # Render a page listing items in the selected category

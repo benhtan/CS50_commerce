@@ -1,3 +1,7 @@
+*{
+
+}
+
 body {
     padding: 10px;
     background-color: white;
@@ -53,11 +57,14 @@ td {
 
 #listing-title-div{
     width: 100%;
-    height: 20%;
     /* border: 1px solid lightgrey; */
 }
 
 #listing-price-div{
     width: 100%;
     /* border: 1px solid lightgrey; */
+}
+
+a{
+    color: black;
 }
