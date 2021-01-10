@@ -1,9 +1,13 @@
 {% load static %}
 
+{% load crispy_forms_tags %}
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <title>{% block title %}Auctions{% endblock %}</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <link href="{% static 'auctions/styles.css' %}" rel="stylesheet">
     </head>
@@ -28,7 +32,7 @@
             <div class="collapse navbar-collapse" id="navbarMenu">            
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item ml-auto {% if activeMenu == 'index' %} active {% endif %}">
-                        <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
+                        <a class="nav-link" href="{% url 'index' %}">Products</a>
                     </li>
                     <li class="nav-item ml-auto {% if activeMenu == 'categories' %} active {% endif %}">
                         <a class="nav-link" href="{% url 'categories' %}">Categories</a>
@@ -38,7 +42,7 @@
                             <a class="nav-link" href="{% url 'watchlist' %}">Watchlist</a>
                         </li>
                         <li class="nav-item ml-auto {% if activeMenu == 'create_listing' %} active {% endif %}">
-                            <a class="nav-link" href="{% url 'create_listing' %}">Create Listing</a>
+                            <a class="nav-link" href="{% url 'create_listing' %}">Sell</a>
                         </li>
                         <li class="nav-item ml-auto">
                             <a class="nav-link" href="{% url 'logout' %}">Log Out</a>

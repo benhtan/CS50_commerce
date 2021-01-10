@@ -12,7 +12,7 @@
     {% endfor %}
     {% endif %}
 
-    <h2>Categories</h2>
+    <h5>Categories</h5>
     <ul>
         {% for c in categories %}
             <a href="{% url 'selectCategory' c.category %}"><li>{{ c.category }}</li></a>

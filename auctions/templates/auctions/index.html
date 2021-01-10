@@ -1,35 +1,34 @@
 {% extends "auctions/layout.html" %}
 
-{% block body %}
-    <h5 style="text-align: center;">{{title}}</h5>
+{% block body %}   
 
+<h5>{{title}}</h5>
+
+<div class="container-fluid">
     
-    <div class="container-fluid">
-        <div class="row">
-            {% for listing in listings %}
-                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-xs-6">
-                    <div id="product-div">
-                        <a href="{% url 'listing_page' listing.id %}"><img src="{{ listing.imageURL }}" class="img-thumbnail img-fluid rounded img-responsive img-resize"></a>
-                            <div style="padding-top: 10px;"></div>
-                            <div id="listing-title-div">
-                                <a href="{% url 'listing_page' listing.id %}">{{ listing.title }}</a>
-                            </div>
+    <div class="row justify-content-center">
+        {% for listing in listings %}
+            <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                <div id="product-div">
+                    <a href="{% url 'listing_page' listing.id %}"><img src="{{ listing.imageURL }}" class="img-thumbnail img-fluid rounded img-responsive img-resize"></a>
+                        <div style="padding-top: 10px;"></div>
+                        <div id="listing-title-div">
+                            <a href="{% url 'listing_page' listing.id %}">{{ listing.title }}</a>
+                        </div>
 
-                            <div id="listing-price-div">
-                                {% if listing.maxBid %}
-                                    <strong>${{ listing.maxBid.userBid }}</strong>
-                                {% else %}
-                                    <strong>${{ listing.startingBid }}</strong>
-                                {% endif %}
-                            </div>
-                    </div>
-                    <div style="padding: 10px;"></div>    
-                </div>        
-                 
-            {% endfor %}
-        </div>
+                        <div id="listing-price-div">
+                            {% if listing.maxBid %}
+                                <strong>${{ listing.maxBid.userBid }}</strong>
+                            {% else %}
+                                <strong>${{ listing.startingBid }}</strong>
+                            {% endif %}
+                        </div>
+                </div>
+                <div style="padding: 10px;"></div>    
+            </div>        
+                
+        {% endfor %}
     </div>
-        
-    
+</div>
 
 {% endblock %}

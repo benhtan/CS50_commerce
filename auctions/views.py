@@ -10,6 +10,7 @@ from django.db.models import Max
 from django.contrib import messages
 import pytz
 from django.utils import timezone
+from django.views.generic import CreateView
 
 from .models import User, Listing, Watchlist, Bid, Comment
 from .helpers import duration
@@ -101,11 +102,11 @@ def register(request):
 
 # Django form where user can start a listing
 class CreateListingForm(forms.Form):
-    title = forms.CharField(label='Title', max_length=100)
-    description = forms.CharField(label='Description', max_length=999,widget=forms.Textarea)
-    startingBid = forms.DecimalField(label='Starting Bid ($)', min_value=0.00, decimal_places=2, max_digits=99)
-    category = forms.CharField(label='Category', required=False, max_length=20)
-    imageURL = forms.URLField(label='Image URL', required=False)
+    title = forms.CharField(label=False, max_length=100, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Title'}))
+    description = forms.CharField(label=False, max_length=999,widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description'}))
+    startingBid = forms.DecimalField(label=False, min_value=0.00, decimal_places=2, max_digits=99, widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Starting Bid ($)'}))
+    category = forms.CharField(label=False, required=False, max_length=20, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Category'}))
+    imageURL = forms.URLField(label=False, required=False, widget=forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Image URL'}))
 
 # Creating a new listing form
 @login_required(login_url='login')
