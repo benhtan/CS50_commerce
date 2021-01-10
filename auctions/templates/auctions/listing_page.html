@@ -21,58 +21,48 @@
         <!-- row with picture, title, price and bidding -->
         <div class="row">
             <!-- picture -->
-            <div class="col-6">
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                 <img src="{{ listing.imageURL }}" class="img-thumbnail img-fluid rounded img-responsive img-resize2" id="">
             </div>
-            <div class="col-6">
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <hr>
                 <strong>{{ listing.title }} {% if not listing.openListing %} (Closed) {% endif %}</strong>
+                <hr>
+                <div style="font-size: small;">Current bid:</div>
+                <div>
+                    {% if listing.maxBid %}
+                        <strong class="price-class">${{ listing.maxBid.userBid }}</strong>
+                    {% else %}
+                        <strong>${{ listing.startingBid }}</strong>
+                    {% endif %} 
+                </div>                            
+
+                {% if user != listing.owner and listing.openListing and user.is_authenticated %}
+                    <div style="padding: 5px;"></div>
+                    <form action="{% url 'bid' listing.id %}" method="post">
+                        {% csrf_token %}
+                        {{ bid_form.newBid }} 
+                        <div style="padding: 5px;"></div>
+                        <input type="submit" value="Place Bid" class="btn btn-primary btn-sm btn-block">
+                    </form> 
+                {% endif %}                            
+
+                {% if user == listing.owner and listing.openListing %}
+                    <div style="padding: 5px;"></div>
+                    <form action="{% url 'close_listing' listing.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="submit" value="Close Listing" class="btn btn-primary btn-sm btn-block">
+                    </form>   
+                {% endif %}                             
                 
-
-                <table class="table" cellpadding="0" border="0" width="100%" cellspacing="0">
-                    <tr>
-                            
-                        <td>
-                            <label>Current bid:</label>
-                            <div>
-                                {% if listing.maxBid %}
-                                    <strong class="price-class">${{ listing.maxBid.userBid }}</strong>
-                                {% else %}
-                                    <strong>${{ listing.startingBid }}</strong>
-                                {% endif %} 
-                            </div>                            
-
-                            {% if user != listing.owner and listing.openListing and user.is_authenticated %}
-                                <div style="padding: 5px;"></div>
-                                <form action="{% url 'bid' listing.id %}" method="post">
-                                    {% csrf_token %}
-                                    {{ bid_form.newBid }} 
-                                    <div style="padding: 5px;"></div>
-                                    <input type="submit" value="Place Bid" class="btn btn-primary btn-sm">
-                                </form> 
-                            {% endif %}                            
-
-                            {% if user == listing.owner and listing.openListing %}
-                                <div style="padding: 5px;"></div>
-                                <form action="{% url 'close_listing' listing.id %}" method="post">
-                                    {% csrf_token %}
-                                    <input type="submit" value="Close Listing" class="btn btn-primary btn-sm">
-                                </form>   
-                            {% endif %}                             
-                            
-                            {% if user.is_authenticated %}
-                                <div style="padding: 5px;"></div>
-                                <form action="{% url 'watchlist' %}" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="listingID" value="{{ listing.id }}">
-                                    <input type="submit" value="{{ watchlistButtonText }}" class="btn btn-warning btn-sm">
-                                </form>
-                            {%endif%}
-
-                        </td>
-                        
-                    </tr>
-
-                </table>
+                {% if user.is_authenticated %}
+                    <div style="padding: 5px;"></div>
+                    <form action="{% url 'watchlist' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="listingID" value="{{ listing.id }}">
+                        <input type="submit" value="{{ watchlistButtonText }}" class="btn btn-outline-primary btn-sm btn-block" style="font: 3vw;">
+                    </form>
+                {%endif%}
             </div>
         </div>
     </div>
