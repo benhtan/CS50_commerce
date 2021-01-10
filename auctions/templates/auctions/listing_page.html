@@ -22,7 +22,7 @@
         <div class="row">
             <!-- picture -->
             <div class="col-6">
-                <img src="{{ listing.imageURL }}" class="img-thumbnail">
+                <img src="{{ listing.imageURL }}" class="img-thumbnail img-fluid rounded img-responsive img-resize2" id="">
             </div>
             <div class="col-6">
                 <strong>{{ listing.title }} {% if not listing.openListing %} (Closed) {% endif %}</strong>
@@ -39,44 +39,51 @@
                             {% else %}
                                 <strong>${{ listing.startingBid }}</strong>
                             {% endif %} 
+
                         </td>
-                        {% if user.is_authenticated %}
-                        <td>
-                            <form action="{% url 'watchlist' %}" method="post">
-                                {% csrf_token %}
-                                <input type="hidden" name="listingID" value="{{ listing.id }}">
-                                <input type="submit" value="{{ watchlistButtonText }}" class="btn btn-warning btn-sm">
-                            </form>
-                        </td>
-                        {%endif%}
+                        
                     </tr>
 
-                    {% if user != listing.owner and listing.openListing  %}
+                    {% if user != listing.owner and listing.openListing and user.is_authenticated %}
                     <tr>
                         <td></td>
                         <td>                
                             <form action="{% url 'bid' listing.id %}" method="post">
                                 {% csrf_token %}
-                                {{ bid_form.newBid }}                              
-                        </td>
-                        <td>
+                                {{ bid_form.newBid }} 
+                                <div style="padding: 5px;"></div>
                                 <input type="submit" value="Place Bid" class="btn btn-primary btn-sm">
-                            </form>
+                            </form> 
+                            
+                            <div style="padding: 5px;"></div>
+                            
+                            {% if user.is_authenticated %}
+                                <form action="{% url 'watchlist' %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="listingID" value="{{ listing.id }}">
+                                    <input type="submit" value="{{ watchlistButtonText }}" class="btn btn-warning btn-sm">
+                                </form>
+                            {%endif%}
+                            
                         </td>
                     </tr>
                     {% endif %}
 
+                    {% if user == listing.owner and listing.openListing %}
                     <tr>
-                        <td></td><td></td>
+                        <td></td>
                         <td>
-                            {% if user == listing.owner and listing.openListing %}
                             <form action="{% url 'close_listing' listing.id %}" method="post">
                                 {% csrf_token %}
                                 <input type="submit" value="Close Listing" class="btn btn-primary btn-sm">
                             </form>
-                            {% endif %}
+                            
                         </td>
-                    </tr>                    
+                    </tr>
+                    {% endif %} 
+
+                    
+
                 </table>
             </div>
         </div>
