@@ -149,11 +149,11 @@ def create_listing(request):
 
 # Django form for user to submit new bid
 class BidForm(forms.Form):
-    newBid = forms.DecimalField(label='New Bid ($)', min_value=0.00, decimal_places=2, max_digits=99)
+    newBid = forms.DecimalField(label=False, min_value=0.00, decimal_places=2, max_digits=99, widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': '$'}))
 
 # Django form to submite comment
 class CommentForm(forms.Form):
-    comment = forms.CharField(label='Comment',max_length=999, widget=forms.Textarea)
+    comment = forms.CharField(label='Comment',max_length=999, widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'What\'s on your mind?'}))
 
 # Rendering the product page
 def listing_page(request, listingID):

@@ -5,80 +5,85 @@
         <div class="alert alert-primary" role="alert">Congratulations! You are the winner!</div>        
     {% endif %}
 
-    <div class="container-fluid">
-        
+    {% if messages %}
+    {% for message in messages %}
+        <div role="alert" style="text-align: center;"
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %} class="alert alert-success" {% endif %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %} class="alert alert-warning" {% endif %}>
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% endif %}
+
+    <div style="padding: 10px;"></div>
+
+    <div class="container">
+        <!-- row with picture, title, price and bidding -->
+        <div class="row">
+            <!-- picture -->
+            <div class="col-6">
+                <img src="{{ listing.imageURL }}" class="img-thumbnail">
+            </div>
+            <div class="col-6">
+                <strong>{{ listing.title }} {% if not listing.openListing %} (Closed) {% endif %}</strong>
+                
+
+                <table class="table" cellpadding="0" border="0" width="100%" cellspacing="0">
+                    <tr>
+                        <td style="white-space: nowrap;" class="">
+                            Current bid:
+                        </td>
+                        <td>
+                            {% if listing.maxBid %}
+                                <strong class="price-class">${{ listing.maxBid.userBid }}</strong>
+                            {% else %}
+                                <strong>${{ listing.startingBid }}</strong>
+                            {% endif %} 
+                        </td>
+                        {% if user.is_authenticated %}
+                        <td>
+                            <form action="{% url 'watchlist' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="listingID" value="{{ listing.id }}">
+                                <input type="submit" value="{{ watchlistButtonText }}" class="btn btn-warning btn-sm">
+                            </form>
+                        </td>
+                        {%endif%}
+                    </tr>
+
+                    {% if user != listing.owner and listing.openListing  %}
+                    <tr>
+                        <td></td>
+                        <td>                
+                            <form action="{% url 'bid' listing.id %}" method="post">
+                                {% csrf_token %}
+                                {{ bid_form.newBid }}                              
+                        </td>
+                        <td>
+                                <input type="submit" value="Place Bid" class="btn btn-primary btn-sm">
+                            </form>
+                        </td>
+                    </tr>
+                    {% endif %}
+
+                    <tr>
+                        <td></td><td></td>
+                        <td>
+                            {% if user == listing.owner and listing.openListing %}
+                            <form action="{% url 'close_listing' listing.id %}" method="post">
+                                {% csrf_token %}
+                                <input type="submit" value="Close Listing" class="btn btn-primary btn-sm">
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>                    
+                </table>
+            </div>
+        </div>
     </div>
 
-
-    <h5>{{ listing.title }} {% if not listing.openListing %} (Closed) {% endif %}</h5>
-
-    {% if user.is_authenticated %}
-        <table>
-            <tr>
-                <!-- Watchlist Button -->
-                <td>
-                    <form action="{% url 'watchlist' %}" method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="listingID" value="{{ listing.id }}">
-                        <input type="submit" value="{{ watchlistButtonText }}" class="btn btn-warning btn-sm">
-                    </form>
-                </td>
-
-                <!-- Close Listing Button -->
-                <td>
-                    {% if user == listing.owner and listing.openListing %}
-                    <form action="{% url 'close_listing' listing.id %}" method="post">
-                        {% csrf_token %}
-                        <input type="submit" value="Close Listing" class="btn btn-primary btn-sm">
-                    </form>
-                    {% endif %}
-                </td>
-            </tr>
-        </table>
-    {% endif %}
-    
-
-    <!-- Product Info Starts Here -->
     <div>
-        <img src="{{ listing.imageURL }}" class="img-thumbnail" width="20%"> 
-               
-        
-
         <table>
-            <tr>
-                <td>Starting Bid:</td>
-                <td><strong>${{ listing.startingBid }}</strong></td>
-
-                <!-- Showing maxBid if any -->
-                {% if listing.maxBid %}
-                    <td>Max Bid:</td>
-                    <td><strong>${{ listing.maxBid.userBid }} ({{ listing.maxBid.user.username }})</strong></td>
-                {% endif %}
-
-                <!-- Bidding feature -->
-                {% if user.is_authenticated and listing.openListing and user != listing.owner %}
-                <td>{{ bid_form.newBid.label }}</td>
-                <td>                
-                    <form action="{% url 'bid' listing.id %}" method="post">
-                        {% csrf_token %}
-                        {{ bid_form.newBid }}
-                        <input type="submit" value="Bid" class="btn btn-danger btn-sm">
-                    </form>
-                </td>
-                {% endif %}
-                
-                <!-- Bidding alerts -->
-                {% if messages %}
-                    {% for message in messages %}
-                        <td><div role="alert"
-                            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %} class="alert alert-success" {% endif %}
-                            {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %} class="alert alert-warning" {% endif %}>
-                            {{ message }}
-                        </div></td>
-                    {% endfor %}
-                {% endif %}
-            </tr> 
-
             <tr>
                 <td>Description:</td>
                 <td>{{ listing.description }}</td>
@@ -98,9 +103,7 @@
                 <td>Listing Date:</td>
                 <td>{{ listing.creationDate.date }} ({{ listingDuration }})</td>
             </tr>
-        </table>
-        
-        
+        </table>         
     </div>
 
     <!-- Comment Form -->

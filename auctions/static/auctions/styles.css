@@ -27,17 +27,17 @@ td {
     padding-bottom: 0px;
 }
 
-/* .container{
-    border: 1px solid black;
+.container{
+    border: 3px solid black;
 }
 
 .row{
-    border: 1px dotted red;
+    border: 3px dotted red;
 }
 
-.col-md{
-    border: 1px dotted blue;
-} */
+.col-6{
+    border: 3px dotted blue;
+}
 
 .img-resize{
     height: 70%;
@@ -76,4 +76,14 @@ a{
 h5{
     text-align: center;
     padding: 10px;
+}
+
+.price-class{
+    font-size: x-large;
+}
+
+#currentBid{
+    border: solid black; 
+    display: flex; 
+    justify-content: right;
 }
