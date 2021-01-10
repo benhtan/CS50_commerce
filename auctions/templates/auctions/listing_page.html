@@ -17,7 +17,7 @@
 
     <div style="padding: 10px;"></div>
 
-    <div class="container">
+    <div class="container-fluid">
         <!-- row with picture, title, price and bidding -->
         <div class="row">
             <!-- picture -->
@@ -65,58 +65,65 @@
                 {%endif%}
             </div>
         </div>
-    </div>
 
-    <div>
-        <table>
-            <tr>
-                <td>Description:</td>
-                <td>{{ listing.description }}</td>
-            </tr>
+        <div style="padding: 10px;"></div>
+        <div class="row">            
+            <div>{{ listing.description }}</div>
+        </div>
 
-            <tr>
-                <td>Category:</td>
-                <td>{{ listing.category }}</td>
-            </tr>
-
-            <tr>
-                <td>Owner:</td>
-                <td>{{ listing.owner.username }}</td>
-            </tr>
-
-            <tr>
-                <td>Listing Date:</td>
-                <td>{{ listing.creationDate.date }} ({{ listingDuration }})</td>
-            </tr>
-        </table>         
-    </div>
-
-    <!-- Comment Form -->
-    {% if user.is_authenticated %}    
-        <form action="{% url 'comment' listing.id %}" method="post">
-            {% csrf_token %}
-            <p style="padding-top: 20px;">Comment as {{user.username}}</p>
-            <table>
+        <div style="padding: 10px;"></div>    
+        <div class="row">
+            <table class="table">
                 <tr>
-                    <td>{{ comment_form.comment }}</td>
-                    <td><input type="submit" value="Comment" class="btn btn-secondary btn-sm"></td>
+                    <td>Category:</td>
+                    <td>{{ listing.category }}</td>
                 </tr>
-            </table>     
-        </form>
-    {% endif %}
     
-    {% if comments %}
-        <h5 style="padding-top: 15px;">Comments:</h5>
-        <table>
-            {% for comment in comments %}
-            <tr>
-                <td>{{ comment.user.username }}</td>
-                <td>: {{ comment.comment }}</td>
-                <td>{{ comment.commentDateTime.date }} ({{ comment.commentDuration }})</td>
-            </tr>
-            {% endfor %}
-        </table>
-    {% endif %}
+                <tr>
+                    <td>Seller:</td>
+                    <td>{{ listing.owner.username }}</td>
+                </tr>
     
+                <tr>
+                    <td>Listing Date:</td>
+                    <td>{{ listing.creationDate.date }} ({{ listingDuration }})</td>
+                </tr>
+            </table>         
+        </div>
 
+        {% if user.is_authenticated %}
+        <div class="row">       
+            <form action="{% url 'comment' listing.id %}" method="post">
+                {% csrf_token %}
+                <div style="padding-top: 20px;">Comment as {{user.username}}</div>
+                <div class="form-group">{{ comment_form.comment }}</div>
+                <div style="" class="ml-auto"><input type="submit" value="Comment" class="btn btn-warning btn-sm float-right"></div>
+            </form>
+            <div style="padding: 20px;"></div>
+        </div>
+        {% endif %}
+
+        {% if comments %}
+        <div class="row">
+
+            <div class="container-fluid">
+
+                {% for comment in comments %}
+                    <div class="row">
+                        <div class="font-weight-bold">{{ comment.user.username }}:</div>
+                    </div>
+                    <div class="row">
+                        <div style="font-size: 13px; color: grey;">{{ comment.commentDateTime.date }} ({{ comment.commentDuration }})</div>
+                    </div>
+                    <div style="padding: 3px;"></div>
+                    <div class="row">
+                        <div>{{ comment.comment }}</div>
+                    </div>
+                    <div style="padding: 10px;"></div>
+                {% endfor %}
+
+            </div>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

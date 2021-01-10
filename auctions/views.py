@@ -153,7 +153,7 @@ class BidForm(forms.Form):
 
 # Django form to submite comment
 class CommentForm(forms.Form):
-    comment = forms.CharField(label='Comment',max_length=999, widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'What\'s on your mind?'}))
+    comment = forms.CharField(label='Comment',max_length=9999, widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'What\'s on your mind?', 'style': 'height: 5em; width: 100%;'}))
 
 # Rendering the product page
 def listing_page(request, listingID):
@@ -185,7 +185,7 @@ def listing_page(request, listingID):
     comment_form = CommentForm()
 
     # Calculating comment duration
-    comments = Comment.objects.filter(listing=listing).all()
+    comments = Comment.objects.filter(listing=listing).order_by('-commentDateTime').all()
     for comment in comments:
         comment.commentDuration = duration(comment.commentDateTime)
         comment.save()

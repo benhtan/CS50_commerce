@@ -13,7 +13,7 @@
                     <a href="{% url 'listing_page' listing.id %}"><img src="{{ listing.imageURL }}" class="img-thumbnail img-fluid rounded img-responsive img-resize"></a>
                         <div style="padding-top: 10px;"></div>
                         <div id="listing-title-div">
-                            <a href="{% url 'listing_page' listing.id %}">{{ listing.title|truncatechars:40 }}</a>
+                            <a href="{% url 'listing_page' listing.id %}">{{ listing.title }}</a>
                         </div>
 
                         <div id="listing-price-div">

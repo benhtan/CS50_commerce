@@ -27,7 +27,7 @@ td {
     padding-bottom: 0px;
 }
 
-.container{
+/* .container{
     border: 3px solid black;
 }
 
@@ -37,6 +37,11 @@ td {
 
 .col-6{
     border: 3px dotted blue;
+} */
+
+form{
+    width: 100%;
+    /* border: solid black; */
 }
 
 .img-resize{
@@ -46,7 +51,7 @@ td {
 }
 
 .img-resize2{
-    height: 290px;
+    height: 350px;
     width: 100%;
     object-fit: scale-down;
 }
@@ -63,6 +68,9 @@ td {
 
 #listing-title-div{
     width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     /* border: 1px solid lightgrey; */
 }
 

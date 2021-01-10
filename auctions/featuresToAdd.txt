@@ -1,4 +1,4 @@
-The looks of website
+(DONE) The looks of website
 
 Display date and time for the location of user. How to get user location? Can also query user for timezone.
 Workaround for now just display date like amazon and other website.
