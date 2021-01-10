@@ -1,12 +1,12 @@
 body {
     padding: 10px;
-    /* background-color: antiquewhite; */
+    background-color: white;
 }
 
 td {
     padding-right: 10px;
     font-size: 80%;
-    width: fit-content;
+    width: max-content;
 }
 
 /* table, th, td {
@@ -21,4 +21,43 @@ td {
 
 #brand {
     padding-bottom: 0px;
+}
+
+/* .container{
+    border: 1px solid black;
+}
+
+.row{
+    border: 1px dotted red;
+}
+
+.col-md{
+    border: 1px dotted blue;
+} */
+
+.img-resize{
+    height: 70%;
+    width: 100%;
+    object-fit: scale-down;
+}
+
+#product-div{
+    /* border: 1px solid lightgrey; */
+    border-radius: 5px;
+    background-color: white;
+    height: 250px;
+    width: 100%;
+    padding: 5px;
+    margin: auto;
+}
+
+#listing-title-div{
+    width: 100%;
+    height: 20%;
+    /* border: 1px solid lightgrey; */
+}
+
+#listing-price-div{
+    width: 100%;
+    /* border: 1px solid lightgrey; */
 }

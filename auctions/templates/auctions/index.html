@@ -1,29 +1,35 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>{{title}}</h2>
+    <h5 style="text-align: center;">{{title}}</h5>
 
-    {% for listing in listings %}
-    <div style="padding-bottom: 50px;">
-        <a href="{% url 'listing_page' listing.id %}"><img src="{{ listing.imageURL }}" class="img-thumbnail" width="20%"></a>
-        <table>
-            <thead>
-                <th><a href="{% url 'listing_page' listing.id %}">{{ listing.title }}</a></th>
-            </thead>            
-            <tr>
-                <td>Starting Bid: <strong>${{ listing.startingBid }}</strong></td>
+    
+    <div class="container-fluid">
+        <div class="row">
+            {% for listing in listings %}
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                    <div id="product-div">
+                        <a href="{% url 'listing_page' listing.id %}"><img src="{{ listing.imageURL }}" class="img-thumbnail img-fluid rounded img-responsive img-resize"></a>
+                            <div style="padding-top: 10px;"></div>
+                            <div id="listing-title-div">
+                                <a href="{% url 'listing_page' listing.id %}">{{ listing.title }}</a>
+                            </div>
 
-                {% if listing.maxBid %}
-                    <td>Max Bid:</td>
-                    <td><strong>${{ listing.maxBid.userBid }} ({{ listing.maxBid.user.username }})</strong></td>
-                {% endif %}
-            </tr>
-            <tr>
-                <td>{{ listing.description }}</td>
-            </tr>
-        </table>      
+                            <div id="listing-price-div">
+                                {% if listing.maxBid %}
+                                    <strong>${{ listing.maxBid.userBid }}</strong>
+                                {% else %}
+                                    <strong>${{ listing.startingBid }}</strong>
+                                {% endif %}
+                            </div>
+                    </div>
+                    <div style="padding: 10px;"></div>    
+                </div>        
+                 
+            {% endfor %}
+        </div>
     </div>
         
-    {% endfor %}
+    
 
 {% endblock %}
