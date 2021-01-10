@@ -13,12 +13,21 @@
     {% endif %}
 
     <h5>Categories</h5>
-    <ul>
-        {% for c in categories %}
-            <a href="{% url 'selectCategory' c.category %}"><li>{{ c.category }}</li></a>
-            
-        {% endfor %}
-    </ul>
+    <div class="container-fluid">
+        <div class="row justify-content-center">      
+            {% for c in categories %}
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-xs-6" id="category-div">
+                    <div>
+                        <a href="{% url 'selectCategory' c.category %}">{{ c.category }}</a> 
+                    </div>
+                    <div style="padding: 10px;"></div>  
+                </div>
+
+            {% endfor %}  
+        </div>
+    </div>
+        
+
     
 
 {% endblock %}

@@ -301,7 +301,7 @@ def comment(request, listingID):
 
 # Render page listing unique categories
 def categories(request):
-    c = Listing.objects.values('category').distinct()
+    c = Listing.objects.order_by('category').values('category').distinct()
     #print(c)
     return render(request, 'auctions/categories.html', {
         'categories': c,

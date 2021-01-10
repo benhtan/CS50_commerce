@@ -4,7 +4,13 @@
     {% if listing.maxBid.user == user and not listing.openListing %}
         <div class="alert alert-primary" role="alert">Congratulations! You are the winner!</div>        
     {% endif %}
-    <h2>{{ listing.title }} {% if not listing.openListing %} (Closed) {% endif %}</h2>
+
+    <div class="container-fluid">
+        
+    </div>
+
+
+    <h5>{{ listing.title }} {% if not listing.openListing %} (Closed) {% endif %}</h5>
 
     {% if user.is_authenticated %}
         <table>
